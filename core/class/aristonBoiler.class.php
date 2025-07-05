@@ -35,41 +35,61 @@ class aristonBoiler extends eqLogic {
 
   /*     * ***********************Methode static*************************** */
 
-  /*
-  * Fonction exécutée automatiquement toutes les minutes par Jeedom
-  public static function cron() {}
-  */
+    public static function cronInterval($interval) {
+      $valueCronTemp = config::byKey('cronchoice', 'aristonBoiler', 5);
+      $valueCron = trim($valueCronTemp);
+      if(!is_numeric($valueCron)){
+          if($valueCron != 'Daily' || $valueCron != 'daily'){
+            throw new Exception(__('Veuillez vérifier la configuration du cron, valeur non attendue', __FILE__));
+          }else{
+            $valueCron = 'Daily';
+          }  
+      }
+      if ($valueCron == $interval) self::getDatas();
+  }
 
-  /*
-  * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-  public static function cron5() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
-  public static function cron10() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom
-  public static function cron15() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 30 minutes par Jeedom
-  public static function cron30() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les heures par Jeedom
-  public static function cronHourly() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement tous les jours par Jeedom
-  public static function cronDaily() {}
-  */
   
+
+  public static function cron() {
+    self::cronInterval(1);
+  }
+  
+
+
+  public static function cron5() {
+    self::cronInterval(5);
+  }
+
+
+
+  public static function cron10() {
+    self::cronInterval(10);
+  }
+
+
+
+  public static function cron15() {
+    self::cronInterval(15);
+  }
+
+
+
+  public static function cron30() {
+    self::cronInterval(30);
+  }
+
+
+
+  public static function cronHourly() {
+    self::cronInterval(60);
+  }
+
+
+
+  public static function cronDaily() {
+    self::cronInterval('Daily');
+  }
+
   /*
   * Permet de déclencher une action avant modification d'une variable de configuration du plugin
   * Exemple avec la variable "param3"
@@ -163,6 +183,22 @@ class aristonBoiler extends eqLogic {
         system::fuserk(config::byKey('socketport', 'aristonBoiler'));
         sleep(1);
     }
+
+    public static function socketConnection($value) {
+
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        $timeout = array('sec' => 180, 'usec' => 0);
+        socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, $timeout);
+        $result = socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'aristonBoiler', 57130));
+        if ($result === false) {
+            log::add(__CLASS__,'error', "socket_connect() failed");
+            socket_close($socket);
+            return;
+        }
+        socket_write($socket, $value, strlen($value));
+        socket_close($socket);
+    }
+
 
 
 

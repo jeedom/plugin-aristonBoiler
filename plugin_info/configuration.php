@@ -24,32 +24,25 @@ if (!isConnect()) {
 ?>
 <form class="form-horizontal">
   <fieldset>
-    <div class="form-group">
-      <label class="col-md-4 control-label">{{Global param 1}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre 1 du plugin}}"></i></sup>
-      </label>
+     <div class="form-group">
+      <label class="col-md-4 control-label">{{SocketPort}}</label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="param1"/>
+        <input class="configKey form-control" data-l1key="socketport" placeholder="57130"/>
       </div>
-    </div>
+    </div> 
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Global param 2}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre 2 du plugin}}"></i></sup>
-      </label>
+      <label class="col-md-4 control-label">{{Choix Cron}}</label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="param2"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">{{Global param 3}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Sélectionnez du paramètre 3 du plugin}}"></i></sup>
-      </label>
-      <div class="col-md-4">
-        <select class="configKey form-control" data-l1key="param3">
-          <option value=""></option>
-          <option value="value1">value1</option>
-          <option value="value2">value2</option>
+        <select class="configKey form-control"  data-l1key="cronchoice"> 
+          <option value="1">{{1 minute}}</option>
+          <option value="5">{{5 minutes}}</option>
+          <option value="10">{{10 minutes}}</option>
+          <option value="15">{{15 minutes}}</option>
+          <option value="30">{{30 minutes}}</option>
+          <option value="60">{{1 heure}}</option>
+          <option value="daily">{{Tous les jours}}</option>
         </select>
+        <!-- <input class="configKey form-control" data-l1key="cronchoice"  placeholder="Choix cron (1,5,10,15,30,60 ou Daily)"/> -->
       </div>
     </div>
   </fieldset>
