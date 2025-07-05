@@ -153,6 +153,8 @@ class aristonBoiler extends eqLogic {
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/modbus/core/php/jeeModbus.php';
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
         $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
+        $cmd .= ' --email ' . config::byKey('email', __CLASS__, '');
+        $cmd .= ' --password ' . config::byKey('password', __CLASS__, '');
         log::add(__CLASS__, 'info', 'Lancement démon ' . $cmd);
         $result = exec($cmd . ' >> ' . log::getPathToLog('aristonBoiler') . ' 2>&1 &');
         $i = 0;
@@ -339,6 +341,24 @@ class aristonBoiler extends eqLogic {
         $listValue .= ";4|Auto";
         $listValue .= ";5|HCHP";
         return $listValue;
+    }
+
+
+    public static function getDatas() {
+       $email = config::byKey('email', 'aristonBoiler', '');
+       $password = config::byKey('password', 'aristonBoiler', '');
+        if (empty($email) || empty($password)) {
+            throw new Exception(__('Veuillez renseigner votre email et mot de passe dans la configuration du plugin', __FILE__));
+        }
+        $eqLogics = eqLogic::byType('aristonBoiler');
+        foreach ($eqLogics as $eqLogic) {
+            $value = json_encode(array(
+              'apikey' => jeedom::getApiKey('aristonBoiler'),
+              'action' => 'getDatas',
+              'eqId' => $eqLogic->getId()
+            ));
+            self::socketConnection($value);
+        }
     }
 
   /*

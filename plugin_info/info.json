@@ -1,43 +1,9 @@
 {
     "id": "aristonBoiler",
-    "name": "aristonBoiler",
+    "name": "AristonBoiler",
     "pluginVersion": "0.1",
-    "specialAttributes": {
-        "object": {
-            "toto": {
-                "name": {
-                    "fr_FR": "Plop je suis un attribut sp\u00e9cial"
-                },
-                "type": "input"
-            },
-            "toto2": {
-                "name": {
-                    "fr_FR": "Plop je suis un attribut sp\u00e9cial number"
-                },
-                "type": "number"
-            }
-        },
-        "user": {
-            "toto": {
-                "name": {
-                    "fr_FR": "Plop je suis un attribut sp\u00e9cial"
-                },
-                "type": "select",
-                "values": [
-                    {
-                        "value": "1",
-                        "name": "valeur 1"
-                    },
-                    {
-                        "value": "plop",
-                        "name": "valeur plop"
-                    }
-                ]
-            }
-        }
-    },
     "description": {
-        "fr_FR": "Template servant de base \u00e0 la cr\u00e9ation de plugins pour Jeedom"
+        "fr_FR": "Plugin de gestion des chaudières Ariston"
     },
     "licence": "AGPL",
     "author": "Jeedom SAS",
@@ -54,20 +20,10 @@
     "changelog": "https://doc.jeedom.com/#language#/plugins/programming/aristonBoiler/changelog",
     "documentation_beta": "https://doc.jeedom.com/#language#/plugins/programming/aristonBoiler/beta",
     "documentation": "https://doc.jeedom.com/#language#/plugins/programming/aristonBoiler",
-    "link": {
-        "forum": "Lien vers le forum",
-        "video": "Lien vers une video"
-    },
     "language": [
         "fr_FR",
         "en_US",
-        "es_ES",
-        "de_DE",
-        "ru_RU",
-        "id_ID",
-        "it_IT",
-        "ja_JP",
-        "pt_PT"
+        "es_ES"
     ],
     "compatibility": [
         "smart",
@@ -75,7 +31,6 @@
         "atlas",
         "rpi",
         "docker",
-        "diy",
-        "mobile"
+        "diy"
     ]
 }

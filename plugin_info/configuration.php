@@ -42,8 +42,19 @@ if (!isConnect()) {
           <option value="60">{{1 heure}}</option>
           <option value="daily">{{Tous les jours}}</option>
         </select>
-        <!-- <input class="configKey form-control" data-l1key="cronchoice"  placeholder="Choix cron (1,5,10,15,30,60 ou Daily)"/> -->
       </div>
     </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Email}}</label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="email" placeholder="email"/>
+      </div>
+    </div> 
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Mot de passe}}</label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="password" placeholder="mot de passe"/>
+      </div>
+    </div> 
   </fieldset>
 </form>

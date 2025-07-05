@@ -22,8 +22,28 @@ import signal
 import json
 import argparse
 
-from jeedom.jeedom import jeedom_socket, jeedom_utils, jeedom_com, JEEDOM_SOCKET_MESSAGE  # jeedom_serial
 
+from jeedom.jeedom import jeedom_socket, jeedom_utils, jeedom_com, JEEDOM_SOCKET_MESSAGE  # jeedom_serial
+from ariston_boiler_control import AristonBoilerControl, OperationMode, HPState
+
+
+
+
+def get_boiler_infos(email, password):
+    try:
+        abc = AristonBoilerControl(email, password, quiet_login=True)
+        abc.login()
+        infos = {
+            "current_temperature": abc.get_current_temperature(),
+            "target_temperature": abc.get_target_temperature(),
+            "operation_mode": str(abc.get_operation_mode()),
+            "hpState": abc.get_hp_state(),
+            "boostMode": abc.get_boost()
+        }
+        return infos
+    except Exception as e:
+        logging.error(f"Erreur récupération infos chaudière : {e}")
+        return {"error": str(e)}
 
 def read_socket():
     if not JEEDOM_SOCKET_MESSAGE.empty():
@@ -33,7 +53,15 @@ def read_socket():
             logging.error("Invalid apikey from socket: %s", message)
             return
         try:
-            print('read')
+            # Récupération des identifiants depuis le message ou la config
+            email = message.get('email', None)
+            password = message.get('password', None)
+            if not email or not password:
+                logging.error('Email ou mot de passe manquant dans le message socket')
+                return
+            infos = get_boiler_infos(email, password)
+            # Envoi des infos au callback Jeedom
+            my_jeedom_com.send_change_event(infos)
         except Exception as e:
             logging.error('Send command to demon error: %s', e)
 
@@ -90,6 +118,8 @@ parser.add_argument("--apikey", help="Apikey", type=str)
 parser.add_argument("--cycle", help="Cycle to send event", type=float)
 parser.add_argument("--pid", help="Pid file", type=str)
 parser.add_argument("--socketport", help="Port for socket server", type=int)
+parser.add_argument("--email", help="Email for boiler control", type=str)
+parser.add_argument("--password", help="Password for boiler control", type=str)
 args = parser.parse_args()
 
 if args.device:
@@ -106,6 +136,10 @@ if args.cycle:
     _cycle = float(args.cycle)
 if args.socketport:
     _socket_port = args.socketport
+if args.email:
+    _email = args.email
+if args.password:
+    _password = args.password
 
 _socket_port = int(_socket_port)
 
@@ -118,6 +152,8 @@ logging.info('Socket host: %s', _socket_host)
 logging.info('PID file: %s', _pidfile)
 logging.info('Apikey: %s', _apikey)
 logging.info('Device: %s', _device)
+logging.info('Callback: %s', _callback)
+
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
