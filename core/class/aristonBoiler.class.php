@@ -150,7 +150,7 @@ class aristonBoiler extends eqLogic {
         $cmd .= ' --retrydefault ' . config::byKey('retrydefault', __CLASS__, 'False');
         $cmd .= ' --timeoutretries ' . config::byKey('timeoutretries', __CLASS__, 0);
         $cmd .= ' --sockethost 127.0.0.1';
-        $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/modbus/core/php/jeeModbus.php';
+        $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/aristonBoiler/core/php/jeeAristonBoiler.php';
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
         $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
         $cmd .= ' --email ' . config::byKey('email', __CLASS__, '');

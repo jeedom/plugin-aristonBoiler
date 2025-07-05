@@ -22,14 +22,22 @@ import signal
 import json
 import argparse
 
+try:
+    from jeedom.jeedom import *
+except ImportError as e:
+    print("Error: importing module jeedom.jeedom" + str(e))
+    sys.exit(1)
 
-from jeedom.jeedom import jeedom_socket, jeedom_utils, jeedom_com, JEEDOM_SOCKET_MESSAGE  # jeedom_serial
 from ariston_boiler_control import AristonBoilerControl, OperationMode, HPState
 
 
 
 
-def get_boiler_infos(email, password):
+def get_boiler_infos(email, password, eqId):
+    results = {}
+    results['FUNC'] = 'getDatas'
+    results['eqId'] = eqId
+    results['data'] = {}
     try:
         abc = AristonBoilerControl(email, password, quiet_login=True)
         abc.login()
@@ -40,7 +48,8 @@ def get_boiler_infos(email, password):
             "hpState": abc.get_hp_state(),
             "boostMode": abc.get_boost()
         }
-        return infos
+        results['data'] = infos
+        return results
     except Exception as e:
         logging.error(f"Erreur récupération infos chaudière : {e}")
         return {"error": str(e)}
@@ -56,14 +65,14 @@ def read_socket():
             return
         try:
             if message['action'] == 'getDatas':
-                ret = get_boiler_infos(_email, _password)
+                ret = get_boiler_infos(_email, _password, message['eqId'])
                 jeedom_com.send_change_immediate(ret)
         except Exception as e:
             logging.error('Send command to demon error: %s', e)
 
 
 def listen():
-    my_jeedom_socket.open()
+    jeedom_socket.open()
     try:
         while 1:
             time.sleep(0.5)
@@ -85,7 +94,7 @@ def shutdown():
     except Exception as e:
         logging.warning('Error removing PID file: %s', e)
     try:
-        my_jeedom_socket.close()
+        jeedom_socket.close()
     except Exception as e:
         logging.warning('Error closing socket: %s', e)
     # try:  # if you need jeedom_serial
@@ -156,11 +165,11 @@ signal.signal(signal.SIGTERM, handler)
 
 try:
     jeedom_utils.write_pid(str(_pidfile))
-    my_jeedom_com = jeedom_com(apikey=_apikey, url=_callback, cycle=_cycle)
-    if not my_jeedom_com.test():
+    jeedom_com = jeedom_com(apikey=_apikey, url=_callback)
+    if not jeedom_com.test():
         logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
         shutdown()
-    my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
+    jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
     listen()
 except Exception as e:
     logging.error('Fatal error: %s', e)
