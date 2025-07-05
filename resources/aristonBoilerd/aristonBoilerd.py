@@ -46,22 +46,18 @@ def get_boiler_infos(email, password):
         return {"error": str(e)}
 
 def read_socket():
+    global JEEDOM_SOCKET_MESSAGE
+    global ret
     if not JEEDOM_SOCKET_MESSAGE.empty():
         logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-        message = json.loads(jeedom_utils.stripped(JEEDOM_SOCKET_MESSAGE.get()))
+        message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
         if message['apikey'] != _apikey:
             logging.error("Invalid apikey from socket: %s", message)
             return
         try:
-            # Récupération des identifiants depuis le message ou la config
-            email = message.get('email', None)
-            password = message.get('password', None)
-            if not email or not password:
-                logging.error('Email ou mot de passe manquant dans le message socket')
-                return
-            infos = get_boiler_infos(email, password)
-            # Envoi des infos au callback Jeedom
-            my_jeedom_com.send_change_event(infos)
+            if message['action'] == 'getDatas':
+                ret = get_boiler_infos(_email, _password)
+                jeedom_com.send_change_immediate(ret)
         except Exception as e:
             logging.error('Send command to demon error: %s', e)
 
@@ -164,7 +160,6 @@ try:
     if not my_jeedom_com.test():
         logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
         shutdown()
-    # my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
     my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
     listen()
 except Exception as e:
