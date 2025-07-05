@@ -8,13 +8,13 @@
     "requests" : {"reinstall" : true}
   },
   "npm": {
-    "plugins/template/ressources/demond"  : {}
+    "plugins/aristonBoiler/ressources/demond"  : {}
   },
   "composer": {
-       "plugins/template"  : {}
+       "plugins/aristonBoiler"  : {}
   },
   "yarn": {
-    "plugins/template/ressources/demond"  : {}
+    "plugins/aristonBoiler/ressources/demond"  : {}
   },
   "plugin": {
   },
