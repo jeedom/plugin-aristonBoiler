@@ -97,6 +97,75 @@ class aristonBoiler extends eqLogic {
    }
    */
 
+       public static function deamon_info(){
+        $return = array();
+        $return['log'] = 'aristonBoiler';
+        $return['state'] = 'nok';
+
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
+        if (file_exists($pid_file)){
+            $pid = trim(file_get_contents($pid_file));
+            if ($pid && function_exists('posix_getsid') && posix_getsid($pid)){
+                $return['state'] = 'ok';
+            }else{
+                shell_exec(system::getCmdSudo() . 'rm -rf ' . $pid_file . ' 2>&1 > /dev/null');
+            }
+        }
+        $return['launchable'] = 'ok';
+        return $return;
+    }
+
+        public static function deamon_start(){
+        self::deamon_stop();
+        $deamon_info = self::deamon_info();
+        if ($deamon_info['launchable'] != 'ok')
+        {
+            throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+        }
+
+        $path = realpath(dirname(__FILE__) . '/../../resources/aristonBoilerd');
+        $cmd = system::getCmdPython3(__CLASS__) .  "{$path}/aristonBoilerd.py";
+        $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
+        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '57130');
+        $cmd .= ' --retrydefault ' . config::byKey('retrydefault', __CLASS__, 'False');
+        $cmd .= ' --timeoutretries ' . config::byKey('timeoutretries', __CLASS__, 0);
+        $cmd .= ' --sockethost 127.0.0.1';
+        $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/modbus/core/php/jeeModbus.php';
+        $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
+        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
+        log::add(__CLASS__, 'info', 'Lancement démon ' . $cmd);
+        $result = exec($cmd . ' >> ' . log::getPathToLog('aristonBoiler') . ' 2>&1 &');
+        $i = 0;
+        while ($i < 5){
+            $deamon_info = self::deamon_info();
+            if ($deamon_info['state'] == 'ok')
+            {
+                break;
+            }
+            sleep(1);
+            $i++;
+        }
+        if ($i >= 5){
+            log::add(__CLASS__, 'error', __('Impossible de lancer le démon, vérifiez le log', __FILE__) , 'unableStartDeamon');
+            return false;
+        }
+        message::removeAll(__CLASS__, 'unableStartDeamon');
+        return true;
+    }
+
+    public static function deamon_stop(){
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
+        if (file_exists($pid_file)){
+            $pid = intval(trim(file_get_contents($pid_file)));
+            system::kill($pid);
+        }
+        system::kill('aristonBoilerd.py');
+        system::fuserk(config::byKey('socketport', 'aristonBoiler'));
+        sleep(1);
+    }
+
+
+
   /*     * *********************Méthodes d'instance************************* */
 
   // Fonction exécutée automatiquement avant la création de l'équipement
