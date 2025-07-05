@@ -190,6 +190,8 @@ class aristonBoiler extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
+
+    $this->createCmds();
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -199,6 +201,109 @@ class aristonBoiler extends eqLogic {
   // Fonction exécutée automatiquement après la suppression de l'équipement
   public function postRemove() {
   }
+
+
+  public function createCmds() {
+   $readHPState = $this->getCmd(null, 'readHPState');
+    if (!is_object($readHPState)) {
+      $readHPState = new aristonBoilerCmd();
+      $readHPState->setName(__('Lecture de l\'état de la pompe à chaleur', __FILE__));
+      $readHPState->setEqLogic_id($this->getId());
+      $readHPState->setLogicalId('readHPState');
+      $readHPState->setType('info');
+      $readHPState->setSubType('binary');
+      $readHPState->setIsHistorized(0);
+      $readHPState->save();
+    }
+    $getCurrentTemp = $this->getCmd(null, 'getCurrentTemp');
+    if (!is_object($getCurrentTemp)) {
+      $getCurrentTemp = new aristonBoilerCmd();
+      $getCurrentTemp->setName(__('Lecture de la température actuelle', __FILE__));
+      $getCurrentTemp->setEqLogic_id($this->getId());
+      $getCurrentTemp->setLogicalId('getCurrentTemp');
+      $getCurrentTemp->setType('info');
+      $getCurrentTemp->setSubType('numeric');
+      $getCurrentTemp->setIsHistorized(0);
+      $getCurrentTemp->save();  
+    }
+    $getTargetTemp = $this->getCmd(null, 'getTargetTemp');
+    if (!is_object($getTargetTemp)) {
+      $getTargetTemp = new aristonBoilerCmd();
+      $getTargetTemp->setName(__('Lecture de la température cible', __FILE__));
+      $getTargetTemp->setEqLogic_id($this->getId());
+      $getTargetTemp->setLogicalId('getTargetTemp');
+      $getTargetTemp->setType('info');
+      $getTargetTemp->setSubType('numeric');
+      $getTargetTemp->setIsHistorized(0);
+      $getTargetTemp->save(); 
+    }
+    $setTargetTemp = $this->getCmd(null, 'setTargetTemp');
+    if (!is_object($setTargetTemp)) {
+      $setTargetTemp = new aristonBoilerCmd();
+      $setTargetTemp->setName(__('Réglage de la température cible', __FILE__));
+      $setTargetTemp->setEqLogic_id($this->getId());
+      $setTargetTemp->setLogicalId('setTargetTemp');
+      $setTargetTemp->setType('action');
+      $setTargetTemp->setSubType('slider');
+      $setTargetTemp->setIsHistorized(0);
+      $setTargetTemp->save(); 
+    }
+    $getOperationMode = $this->getCmd(null, 'getOperationMode');
+    if (!is_object($getOperationMode)) {
+      $getOperationMode = new aristonBoilerCmd();
+      $getOperationMode->setName(__('Lecture du mode de fonctionnement', __FILE__));
+      $getOperationMode->setEqLogic_id($this->getId());
+      $getOperationMode->setLogicalId('getOperationMode');
+      $getOperationMode->setType('info');
+      $getOperationMode->setSubType('string');
+      $getOperationMode->setIsHistorized(0);
+      $getOperationMode->save();
+    }
+    $setOperationMode = $this->getCmd(null, 'setOperationMode');
+    if (!is_object($setOperationMode)) {
+      $setOperationMode = new aristonBoilerCmd();
+      $setOperationMode->setName(__('Réglage du mode de fonctionnement', __FILE__));
+      $setOperationMode->setEqLogic_id($this->getId());
+      $setOperationMode->setLogicalId('setOperationMode');
+      $setOperationMode->setType('action');
+      $setOperationMode->setSubType('select');
+      $listValue = $this->generateStageListValue();
+      $setOperationMode->setConfiguration('listValue', $listValue);
+      $setOperationMode->setIsHistorized(0);
+      $setOperationMode->save();    
+    }
+    $getBoostMode = $this->getCmd(null, 'getBoostMode');
+    if (!is_object($getBoostMode)) {
+      $getBoostMode = new aristonBoilerCmd();
+      $getBoostMode->setName(__('Lecture du mode Boost', __FILE__));
+      $getBoostMode->setEqLogic_id($this->getId());
+      $getBoostMode->setLogicalId('getBoostMode');
+      $getBoostMode->setType('info');
+      $getBoostMode->setSubType('binary');
+      $getBoostMode->setIsHistorized(0);
+      $getBoostMode->save();
+    }
+    $setBoostMode = $this->getCmd(null, 'setBoostMode');
+    if (!is_object($setBoostMode)) {
+      $setBoostMode = new aristonBoilerCmd();
+      $setBoostMode->setName(__('Activation du mode Boost', __FILE__));
+      $setBoostMode->setEqLogic_id($this->getId());
+      $setBoostMode->setLogicalId('setBoostMode');
+      $setBoostMode->setType('action');
+      $setBoostMode->setSubType('other');
+      $setBoostMode->setIsHistorized(0);
+      $setBoostMode->save();
+    }
+  }
+
+   public function generateStageListValue() {
+        $listValue = "1|Green";
+        $listValue .= ";2|Comfort";
+        $listValue .= ";3|Fast";
+        $listValue .= ";4|Auto";
+        $listValue .= ";5|HCHP";
+        return $listValue;
+    }
 
   /*
   * Permet de crypter/décrypter automatiquement des champs de configuration des équipements

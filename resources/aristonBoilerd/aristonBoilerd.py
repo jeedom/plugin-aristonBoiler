@@ -82,7 +82,7 @@ _apikey = ''
 _callback = ''
 _cycle = 0.3
 
-parser = argparse.ArgumentParser(description='Desmond Daemon for Jeedom plugin')
+parser = argparse.ArgumentParser(description='Daemon for Jeedom aristonBoiler')
 parser.add_argument("--device", help="Device", type=str)
 parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
 parser.add_argument("--callback", help="Callback", type=str)
@@ -111,7 +111,7 @@ _socket_port = int(_socket_port)
 
 jeedom_utils.set_log_level(_log_level)
 
-logging.info('Start demond')
+logging.info('Start demond aristonBoiler')
 logging.info('Log level: %s', _log_level)
 logging.info('Socket port: %s', _socket_port)
 logging.info('Socket host: %s', _socket_host)
