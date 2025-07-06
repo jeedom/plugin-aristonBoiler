@@ -82,7 +82,7 @@ if($result['FUNC'] == 'getDatas') {
             //     $cmd->execCmd($associatedOperationMode[$data['operation_mode']]);
             //     break;
             case 'readHPState':
-                $cmd->event($data['hpState']);
+                $cmd->event($data['hpState'] == 'HPState.ON' ? 1 : 0);
                 break;
             case 'getBoostMode':
                 $cmd->event($data['boostMode'] ? 1 : 0);
