@@ -40,7 +40,15 @@ if (!is_array($result)) {
 }
 
 
+
 if($result['FUNC'] == 'getDatas') {
+    $associatedOperationMode = array(
+        'OperationMode.GREEN' => 1,
+        'OperationMode.COMFORT' => 2,
+        'OperationMode.FAST' => 3,
+        'OperationMode.AUTO' => 4,
+        'OperationMode.HCHP' => 5
+    );
     $eqId = $result['eqId'];
     $data = $result['data'];
     log::add('aristonBoiler', 'debug', '└─▶︎ Event sur Cmds : ' . json_encode($data) . ' ◀︎───────────');
@@ -61,7 +69,7 @@ if($result['FUNC'] == 'getDatas') {
                 $cmd->event($data['target_temperature']);
                 break;
             case 'getOperationMode':
-                $cmd->event($data['operation_mode']);
+                $cmd->event($associatedOperationMode[$data['operation_mode']]);
                 break;
             case 'readHPState':
                 $cmd->event($data['hpState']);
