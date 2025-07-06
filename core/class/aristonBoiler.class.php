@@ -254,7 +254,7 @@ class aristonBoiler extends eqLogic {
     $getCurrentTemp = $this->getCmd(null, 'getCurrentTemp');
     if (!is_object($getCurrentTemp)) {
       $getCurrentTemp = new aristonBoilerCmd();
-      $getCurrentTemp->setName(__('Lecture de la température actuelle', __FILE__));
+      $getCurrentTemp->setName(__('Température actuelle', __FILE__));
       $getCurrentTemp->setEqLogic_id($this->getId());
       $getCurrentTemp->setLogicalId('getCurrentTemp');
       $getCurrentTemp->setType('info');
@@ -262,12 +262,13 @@ class aristonBoiler extends eqLogic {
       $getCurrentTemp->setIsHistorized(0);
       $getCurrentTemp->save();  
     }
+    $getCurrentTemp->setName(__('Température actuelle', __FILE__));
     $getCurrentTemp->setUnite('°C');
     $getCurrentTemp->save();
     $getTargetTemp = $this->getCmd(null, 'getTargetTemp');
     if (!is_object($getTargetTemp)) {
       $getTargetTemp = new aristonBoilerCmd();
-      $getTargetTemp->setName(__('Lecture de la température cible', __FILE__));
+      $getTargetTemp->setName(__('Température cible', __FILE__));
       $getTargetTemp->setEqLogic_id($this->getId());
       $getTargetTemp->setLogicalId('getTargetTemp');
       $getTargetTemp->setType('info');
@@ -275,6 +276,7 @@ class aristonBoiler extends eqLogic {
       $getTargetTemp->setIsHistorized(0);
       $getTargetTemp->save(); 
     }
+    $getTargetTemp->setName(__('Température cible', __FILE__));
     $getTargetTemp->setUnite('°C');
     $getTargetTemp->save();
     $setTargetTemp = $this->getCmd(null, 'setTargetTemp');
@@ -291,7 +293,7 @@ class aristonBoiler extends eqLogic {
     $getOperationMode = $this->getCmd(null, 'getOperationMode');
     if (!is_object($getOperationMode)) {
       $getOperationMode = new aristonBoilerCmd();
-      $getOperationMode->setName(__('Lecture du mode de fonctionnement', __FILE__));
+      $getOperationMode->setName(__('Mode de fonctionnement', __FILE__));
       $getOperationMode->setEqLogic_id($this->getId());
       $getOperationMode->setLogicalId('getOperationMode');
       $getOperationMode->setType('info');
@@ -299,6 +301,8 @@ class aristonBoiler extends eqLogic {
       $getOperationMode->setIsHistorized(0);
       $getOperationMode->save();
     }
+    $getOperationMode->setName(__('Mode de fonctionnement', __FILE__));
+    $getOperationMode->save();
     $getOperationModeId = $getOperationMode->getId();
 
     $setOperationMode = $this->getCmd(null, 'setOperationMode');
@@ -314,13 +318,13 @@ class aristonBoiler extends eqLogic {
       $setOperationMode->setIsHistorized(0);
       $setOperationMode->save();    
     }
-    $setOperationMode->setValue($getOperationModeId );
+    $setOperationMode->setValue($getOperationModeId);
     $setOperationMode->save();  
 
     $getBoostMode = $this->getCmd(null, 'getBoostMode');
     if (!is_object($getBoostMode)) {
       $getBoostMode = new aristonBoilerCmd();
-      $getBoostMode->setName(__('Lecture du mode Boost', __FILE__));
+      $getBoostMode->setName(__('Mode Boost', __FILE__));
       $getBoostMode->setEqLogic_id($this->getId());
       $getBoostMode->setLogicalId('getBoostMode');
       $getBoostMode->setType('info');
@@ -328,6 +332,10 @@ class aristonBoiler extends eqLogic {
       $getBoostMode->setIsHistorized(0);
       $getBoostMode->save();
     }
+    $getBoostMode->setName(__('Mode Boost', __FILE__));
+    $getBoostMode->save();
+    $getBoostModeId = $getBoostMode->getId();
+    
     $setBoostMode = $this->getCmd(null, 'setBoostMode');
     if (!is_object($setBoostMode)) {
       $setBoostMode = new aristonBoilerCmd();
@@ -339,6 +347,8 @@ class aristonBoiler extends eqLogic {
       $setBoostMode->setIsHistorized(0);
       $setBoostMode->save();
     }
+    $setBoostMode->setValue($getBoostModeId);
+    $setBoostMode->save();
   }
 
    public function generateStageListValue() {
