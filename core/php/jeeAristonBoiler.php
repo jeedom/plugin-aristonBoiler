@@ -38,3 +38,43 @@ log::add('aristonBoiler', 'debug', '┌─▶︎ CallBack from AristonBoiler: ' 
 if (!is_array($result)) {
     die();
 }
+
+
+if($result['FUNC'] == 'getDatas') {
+    $eqId = $result['eqId'];
+    $data = $result['data'];
+    log::add('aristonBoiler', 'debug', '└─▶︎ CallBack from AristonBoiler: ' . json_encode($data) . ' ◀︎───────────');
+    
+    $eqLogic = aristonBoiler::byId($eqId);
+    if (!is_object($eqLogic)) {
+        log::add('aristonBoiler', 'error', 'Équipement introuvable avec l\'ID: ' . $eqId);
+        return;
+    }
+
+    $cmds = $eqLogic->getCmd();
+    foreach ($cmds as $cmd) {
+        switch ($cmd->getLogicalId()) {
+            case 'getCurrentTemp':
+                $cmd->event($data['current_temperature']);
+                break;
+            case 'getTargetTemp':
+                $cmd->event($data['target_temperature']);
+                break;
+            case 'getOperationMode':
+                $cmd->event($data['operation_mode']);
+                break;
+            case 'readHPState':
+                $cmd->event($data['hpState']);
+                break;
+            case 'getBoostMode':
+                $cmd->event($data['boostMode'] ? 1 : 0);
+                break;
+            default:
+                log::add('aristonBoiler', 'debug', 'Commande non gérée:' . $cmd->getLogicalId());
+                continue 2; 
+        }
+        $cmd->save();
+        log::add('aristonBoiler', 'debug', 'Commande mise à jour: ' . $cmd->getName() . ' avec la valeur: ' . $cmd->getValue());
+    }
+
+}
