@@ -147,8 +147,6 @@ class aristonBoiler extends eqLogic {
         $cmd = system::getCmdPython3(__CLASS__) .  "{$path}/aristonBoilerd.py";
         $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
         $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '57130');
-        $cmd .= ' --retrydefault ' . config::byKey('retrydefault', __CLASS__, 'False');
-        $cmd .= ' --timeoutretries ' . config::byKey('timeoutretries', __CLASS__, 0);
         $cmd .= ' --sockethost 127.0.0.1';
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/aristonBoiler/core/php/jeeAristonBoiler.php';
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
