@@ -28,7 +28,11 @@ except ImportError as e:
     print("Error: importing module jeedom.jeedom" + str(e))
     sys.exit(1)
 
+
+
 from ariston_boiler_control import AristonBoilerControl, OperationMode, HPState
+
+ariston_conn = None
 
 
 
@@ -38,15 +42,16 @@ def get_boiler_infos(email, password, eqId):
     results['FUNC'] = 'getDatas'
     results['eqId'] = eqId
     results['data'] = {}
+    global ariston_conn
     try:
-        abc = AristonBoilerControl(email, password, quiet_login=True)
-        abc.login()
+        if ariston_conn is None:
+            raise Exception("Connexion Ariston non initialisée")
         infos = {
-            "current_temperature": abc.get_current_temperature(),
-            "target_temperature": abc.get_target_temperature(),
-            "operation_mode": str(abc.get_operation_mode()),
-            "hpState": abc.get_hp_state(),
-            "boostMode": abc.get_boost()
+            "current_temperature": ariston_conn.get_current_temperature(),
+            "target_temperature": ariston_conn.get_target_temperature(),
+            "operation_mode": str(ariston_conn.get_operation_mode()),
+            "hpState": ariston_conn.get_hp_state(),
+            "boostMode": ariston_conn.get_boost()
         }
         results['data'] = infos
         return results
@@ -141,10 +146,22 @@ if args.cycle:
     _cycle = float(args.cycle)
 if args.socketport:
     _socket_port = args.socketport
+
 if args.email:
     _email = args.email
 if args.password:
     _password = args.password
+
+def init_ariston_connexion():
+    global ariston_conn
+    try:
+        ariston_conn = AristonBoilerControl(_email, _password, quiet_login=True)
+        ariston_conn.login()
+        logging.info("Connexion Ariston initialisée avec succès.")
+    except Exception as e:
+        logging.error(f"Erreur lors de l'initialisation de la connexion Ariston : {e}")
+        ariston_conn = None
+
 
 _socket_port = int(_socket_port)
 
@@ -170,6 +187,7 @@ try:
         logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
         shutdown()
     jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
+    init_ariston_connexion()
     listen()
 except Exception as e:
     logging.error('Fatal error: %s', e)
