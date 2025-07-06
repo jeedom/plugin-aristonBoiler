@@ -73,7 +73,6 @@ if($result['FUNC'] == 'getDatas') {
                 log::add('aristonBoiler', 'debug', 'Commande non gérée:' . $cmd->getLogicalId());
                 continue 2; 
         }
-        $cmd->save();
         log::add('aristonBoiler', 'debug', 'Commande mise à jour: ' . $cmd->getName() . ' avec la valeur: ' . $cmd->getValue());
     }
 
