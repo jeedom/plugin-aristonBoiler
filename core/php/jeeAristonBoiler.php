@@ -33,7 +33,7 @@ if (!jeedom::apiAccess(init('apikey'), 'aristonBoiler')) {
 
 
 $result = json_decode(file_get_contents("php://input"), true);
-log::add('modbus', 'debug', '┌─▶︎ CallBack from AristonBoiler: ' . json_encode($result) . ' ◀︎───────────');
+log::add('aristonBoiler', 'debug', '┌─▶︎ CallBack from AristonBoiler: ' . json_encode($result) . ' ◀︎───────────');
 
 if (!is_array($result)) {
     die();
