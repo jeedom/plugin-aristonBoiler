@@ -290,6 +290,10 @@ class aristonBoiler extends eqLogic {
       $setTargetTemp->setIsHistorized(0);
       $setTargetTemp->save(); 
     }
+    $setTargetTemp->setMin(35);
+    $setTargetTemp->setMax(80);
+    $setTargetTemp->save(); 
+
     $getOperationMode = $this->getCmd(null, 'getOperationMode');
     if (!is_object($getOperationMode)) {
       $getOperationMode = new aristonBoilerCmd();
