@@ -112,7 +112,7 @@ def shutdown():
 
 
 _log_level = "error"
-_socket_port = 55009
+_socket_port = 57130
 _socket_host = 'localhost'
 _device = 'auto'
 _pidfile = '/tmp/demond.pid'
@@ -125,9 +125,9 @@ parser.add_argument("--device", help="Device", type=str)
 parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
 parser.add_argument("--callback", help="Callback", type=str)
 parser.add_argument("--apikey", help="Apikey", type=str)
-parser.add_argument("--cycle", help="Cycle to send event", type=float)
 parser.add_argument("--pid", help="Pid file", type=str)
 parser.add_argument("--socketport", help="Port for socket server", type=int)
+parser.add_argument("--sockethost", help="Sockethost for server", type=str)
 parser.add_argument("--email", help="Email for boiler control", type=str)
 parser.add_argument("--password", help="Password for boiler control", type=str)
 args = parser.parse_args()
@@ -142,10 +142,10 @@ if args.apikey:
     _apikey = args.apikey
 if args.pid:
     _pidfile = args.pid
-if args.cycle:
-    _cycle = float(args.cycle)
 if args.socketport:
-    _socket_port = args.socketport
+    _socket_port = int(args.socketport)
+if args.sockethost:
+    _socket_host = args.sockethost
 
 if args.email:
     _email = args.email
