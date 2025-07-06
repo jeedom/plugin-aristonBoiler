@@ -295,6 +295,8 @@ class aristonBoiler extends eqLogic {
       $getOperationMode->setIsHistorized(0);
       $getOperationMode->save();
     }
+    $getOperationModeId = $getOperationMode->getId();
+    
     $setOperationMode = $this->getCmd(null, 'setOperationMode');
     if (!is_object($setOperationMode)) {
       $setOperationMode = new aristonBoilerCmd();
@@ -308,6 +310,9 @@ class aristonBoiler extends eqLogic {
       $setOperationMode->setIsHistorized(0);
       $setOperationMode->save();    
     }
+    $setOperationMode->setValue($getOperationModeId );
+    $setOperationMode->save();  
+
     $getBoostMode = $this->getCmd(null, 'getBoostMode');
     if (!is_object($getBoostMode)) {
       $getBoostMode = new aristonBoilerCmd();
