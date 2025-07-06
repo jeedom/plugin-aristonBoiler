@@ -43,7 +43,7 @@ if (!is_array($result)) {
 if($result['FUNC'] == 'getDatas') {
     $eqId = $result['eqId'];
     $data = $result['data'];
-    log::add('aristonBoiler', 'debug', '└─▶︎ CallBack from AristonBoiler: ' . json_encode($data) . ' ◀︎───────────');
+    log::add('aristonBoiler', 'debug', '└─▶︎ Event sur Cmds : ' . json_encode($data) . ' ◀︎───────────');
     
     $eqLogic = aristonBoiler::byId($eqId);
     if (!is_object($eqLogic)) {
