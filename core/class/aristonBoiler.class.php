@@ -335,20 +335,30 @@ class aristonBoiler extends eqLogic {
     $getBoostMode->setName(__('Mode Boost', __FILE__));
     $getBoostMode->save();
     $getBoostModeId = $getBoostMode->getId();
-    
-    $setBoostMode = $this->getCmd(null, 'setBoostMode');
-    if (!is_object($setBoostMode)) {
-      $setBoostMode = new aristonBoilerCmd();
-      $setBoostMode->setName(__('Activation du mode Boost', __FILE__));
-      $setBoostMode->setEqLogic_id($this->getId());
-      $setBoostMode->setLogicalId('setBoostMode');
-      $setBoostMode->setType('action');
-      $setBoostMode->setSubType('other');
-      $setBoostMode->setIsHistorized(0);
-      $setBoostMode->save();
+
+    $setBoostModeOn = $this->getCmd(null, 'setBoostModeOn');
+    if (!is_object($setBoostModeOn)) {
+      $setBoostModeOn = new aristonBoilerCmd();
+      $setBoostModeOn->setName(__('Activation du mode Boost', __FILE__));
+      $setBoostModeOn->setEqLogic_id($this->getId());
+      $setBoostModeOn->setLogicalId('setBoostModeOn');
+      $setBoostModeOn->setType('action');
+      $setBoostModeOn->setSubType('other');
+      $setBoostModeOn->setIsHistorized(0);
+      $setBoostModeOn->save();
     }
-    $setBoostMode->setValue($getBoostModeId);
-    $setBoostMode->save();
+
+    $setBoostModeOff = $this->getCmd(null, 'setBoostModeOff');
+    if (!is_object($setBoostModeOff)) {
+      $setBoostModeOff = new aristonBoilerCmd();
+      $setBoostModeOff->setName(__('Désactivation du mode Boost', __FILE__));
+      $setBoostModeOff->setEqLogic_id($this->getId());
+      $setBoostModeOff->setLogicalId('setBoostModeOff');
+      $setBoostModeOff->setType('action');
+      $setBoostModeOff->setSubType('other');
+      $setBoostModeOff->setIsHistorized(0);
+      $setBoostModeOff->save();
+    }
   }
 
    public function generateStageListValue() {
@@ -418,6 +428,62 @@ class aristonBoilerCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+
+       $associatedOperationMode = array(
+        1 => 'OperationMode.GREEN',
+        2 => 'OperationMode.COMFORT',
+        3 => 'OperationMode.FAST',
+        4 => 'OperationMode.AUTO',
+        5 => 'OperationMode.HCHP'
+    );
+
+
+    $logicalCmd = $this->getLogicalId();
+    $eqlogic = $this->getEqLogic();
+
+    switch ($logicalCmd) {
+      case 'setTargetTemp':
+        $value = intval($_options['slider']);
+        if ($value < 30 || $value > 80) {
+          throw new Exception(__('La température cible doit être comprise entre 30 et 80°C', __FILE__));
+        }
+        $data = array(
+          'action' => 'setTargetTemp',
+          'eqId' => $eqlogic->getId(),
+          'value' => $value
+        );
+        break;
+
+      case 'setOperationMode':
+        $value = $_options['select'];
+        $data = array(
+          'action' => 'setOperationMode',
+          'eqId' => $eqlogic->getId(),
+          'value' => $associatedOperationMode[intVal($value)]
+        );
+        break;
+
+      case 'setBoostModeOn':
+        $data = array(
+          'action' => 'setBoostMode',
+          'eqId' => $eqlogic->getId(),
+          'value' => true
+        );
+      case 'setBoostModeOff':
+        $data = array(
+          'action' => 'setBoostMode',
+          'eqId' => $eqlogic->getId(),
+          'value' => false
+        );
+        break;
+
+      default:
+        throw new Exception(__('Commande non reconnue', __FILE__));
+    }
+
+    $value = json_encode($data);
+    aristonBoiler::socketConnection($value);
+    log::add('aristonBoiler', 'debug', '┌─▶︎ Exécution de la commande : ' . $this->getName() );
   }
 
   /*     * **********************Getteur Setteur*************************** */

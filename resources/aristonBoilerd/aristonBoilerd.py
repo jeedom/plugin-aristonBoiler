@@ -72,6 +72,39 @@ def read_socket():
             if message['action'] == 'getDatas':
                 ret = get_boiler_infos(_email, _password, message['eqId'])
                 jeedom_com.send_change_immediate(ret)
+            elif message['action'] == 'getDatas':
+                ret = get_boiler_infos(_email, _password, message['eqId'])
+                jeedom_com.send_change_immediate(ret)
+            elif message['action'] == 'setTargetTemperature':
+                target_temp = message['value']
+                if ariston_conn is not None:
+                    ariston_conn.set_target_temperature(target_temp)
+                    ret = get_boiler_infos(_email, _password, message['eqId'])
+                    jeedom_com.send_change_immediate(ret)
+                else:
+                    logging.error("Ariston connection not initialized.")
+            elif message['action'] == 'setOperationMode':
+                operation_mode = message['value']
+                if ariston_conn is not None:
+                    try:
+                        ariston_conn.set_operation_mode(operation_mode)
+                        ret = get_boiler_infos(_email, _password, message['eqId'])
+                        jeedom_com.send_change_immediate(ret)
+                    except KeyError:
+                        logging.error(f"Invalid operation mode: {operation_mode}")
+                else:
+                    logging.error("Ariston connection not initialized.")
+            elif message['action'] == 'setBoostMode':
+                boost_mode = message['value']
+                if ariston_conn is not None:
+                    try:
+                        ariston_conn.set_boost(boost_mode)
+                        ret = get_boiler_infos(_email, _password, message['eqId'])
+                        jeedom_com.send_change_immediate(ret)
+                    except KeyError:
+                        logging.error(f"Invalid boost mode: {boost_mode}")
+                else:
+                    logging.error("Ariston connection not initialized.")
         except Exception as e:
             logging.error('Send command to demon error: %s', e)
 
