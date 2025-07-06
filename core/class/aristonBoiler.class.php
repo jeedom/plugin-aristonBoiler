@@ -450,7 +450,7 @@ class aristonBoilerCmd extends cmd {
         $data = array(
           'action' => 'setTargetTemp',
           'eqId' => $eqlogic->getId(),
-          'value' => $value
+          'value' => floatVal($value)
         );
         break;
 
