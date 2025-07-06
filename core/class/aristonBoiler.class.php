@@ -262,6 +262,8 @@ class aristonBoiler extends eqLogic {
       $getCurrentTemp->setIsHistorized(0);
       $getCurrentTemp->save();  
     }
+    $getCurrentTemp->setUnite('°C');
+    $getCurrentTemp->save();
     $getTargetTemp = $this->getCmd(null, 'getTargetTemp');
     if (!is_object($getTargetTemp)) {
       $getTargetTemp = new aristonBoilerCmd();
@@ -273,6 +275,8 @@ class aristonBoiler extends eqLogic {
       $getTargetTemp->setIsHistorized(0);
       $getTargetTemp->save(); 
     }
+    $getTargetTemp->setUnite('°C');
+    $getTargetTemp->save();
     $setTargetTemp = $this->getCmd(null, 'setTargetTemp');
     if (!is_object($setTargetTemp)) {
       $setTargetTemp = new aristonBoilerCmd();
@@ -296,7 +300,7 @@ class aristonBoiler extends eqLogic {
       $getOperationMode->save();
     }
     $getOperationModeId = $getOperationMode->getId();
-    
+
     $setOperationMode = $this->getCmd(null, 'setOperationMode');
     if (!is_object($setOperationMode)) {
       $setOperationMode = new aristonBoilerCmd();
