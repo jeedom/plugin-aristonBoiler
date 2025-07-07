@@ -76,7 +76,7 @@ def read_socket():
                 target_temp = message['value']
                 if ariston_conn is not None:
                     ariston_conn.set_target_temperature(target_temp)
-                    time.sleep(3)
+                    time.sleep(6)
                     ret = get_boiler_infos(_email, _password, message['eqId'])
                     jeedom_com.send_change_immediate(ret)
                 else:
@@ -96,8 +96,8 @@ def read_socket():
                 if ariston_conn is not None:
                     try:
                         ariston_conn.set_operation_mode(operation_mode)
-                        ret = get_boiler_infos(_email, _password, message['eqId'])
-                        time.sleep(3)
+                        time.sleep(6)
+                        ret = get_boiler_infos(_email, _password, message['eqId'])     
                         jeedom_com.send_change_immediate(ret)
                     except KeyError:
                         logging.error(f"Invalid operation mode: {operation_mode}")
@@ -108,7 +108,7 @@ def read_socket():
                 if ariston_conn is not None:
                     try:
                         ariston_conn.set_boost(boost_mode)
-                        time.sleep(3)
+                        time.sleep(6)
                         ret = get_boiler_infos(_email, _password, message['eqId'])
                         jeedom_com.send_change_immediate(ret)
                     except KeyError:
@@ -198,7 +198,7 @@ if args.password:
 def init_ariston_connexion():
     global ariston_conn
     try:
-        ariston_conn = AristonBoilerControl(_email, _password, quiet_login=True)
+        ariston_conn = AristonBoilerControl(_email, _password, poll_interval=5, quiet_login=True)
         ariston_conn.login()
         logging.info("Connexion Ariston initialisée avec succès.")
     except Exception as e:
