@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/ariston_boiler_control/__init__.py
+src/ariston_boiler_control/_boiler_control.py
+src/ariston_boiler_control.egg-info/PKG-INFO
+src/ariston_boiler_control.egg-info/SOURCES.txt
+src/ariston_boiler_control.egg-info/dependency_links.txt
+src/ariston_boiler_control.egg-info/requires.txt
+src/ariston_boiler_control.egg-info/top_level.txt
