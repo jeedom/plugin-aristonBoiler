@@ -84,8 +84,17 @@ def read_socket():
                 else:
                     logging.error("Ariston connection not initialized.")
             elif message['action'] == 'setOperationMode':
-                operation_mode = message['value']
-                logging.debug(f"Setting operation mode: {operation_mode}")
+                try:
+                    value = message['value']
+                    if isinstance(value, str) and value.startswith('OperationMode.'):
+                        mode_str = value.split('.')[-1]
+                        operation_mode = OperationMode[mode_str]
+                    else:
+                        operation_mode = OperationMode(value)
+                    logging.debug(f"Setting operation mode: {operation_mode}")
+                except Exception as e:
+                    logging.error(f"Invalid operation mode value: {message['value']} ({e})")
+                    return
                 if ariston_conn is not None:
                     try:
                         ariston_conn.set_operation_mode(operation_mode)
