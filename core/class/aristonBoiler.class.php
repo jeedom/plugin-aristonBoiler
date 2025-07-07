@@ -210,6 +210,7 @@ class aristonBoiler extends eqLogic {
 
   // Fonction exécutée automatiquement après la création de l'équipement
   public function postInsert() {
+     $this->createCmds();
   }
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
@@ -231,7 +232,7 @@ class aristonBoiler extends eqLogic {
   }
 
     public function postAjax(){
-       $this->createCmds();
+      
     }
 
 
