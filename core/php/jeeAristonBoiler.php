@@ -66,7 +66,7 @@ if($result['FUNC'] == 'getDatas') {
         return;
     }
 
-    $cmds = $eqLogic->getCmd();
+    $cmds = $eqLogic->getCmd('info');
     foreach ($cmds as $cmd) {
         switch ($cmd->getLogicalId()) {
             case 'getCurrentTemp':
@@ -88,10 +88,10 @@ if($result['FUNC'] == 'getDatas') {
                 $cmd->event($data['boostMode'] ? 1 : 0);
                 break;
             default:
-                log::add('aristonBoiler', 'debug', 'Commande non gérée:' . $cmd->getLogicalId());
+                // log::add('aristonBoiler', 'debug', 'Commande non gérée:' . $cmd->getLogicalId());
                 continue 2; 
         }
-        log::add('aristonBoiler', 'debug', 'Commande mise à jour: ' . $cmd->getName() . ' avec la valeur: ' . $cmd->getValue());
+        log::add('aristonBoiler', 'debug', 'Commande mise à jour: ' . $cmd->getName() . ' avec la valeur: ' . $cmd->execCmd());
     }
 
 }

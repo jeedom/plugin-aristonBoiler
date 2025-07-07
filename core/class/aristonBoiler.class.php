@@ -481,6 +481,7 @@ class aristonBoilerCmd extends cmd {
           'value' => true,
           'apikey' => jeedom::getApiKey('aristonBoiler')
         );
+        break;
       case 'setBoostModeOff':
         $data = array(
           'action' => 'setBoostMode',
