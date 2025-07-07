@@ -495,6 +495,8 @@ class aristonBoilerCmd extends cmd {
         throw new Exception(__('Commande non reconnue', __FILE__));
     }
 
+    $eqlogic->refeshWidget();
+
     $value = json_encode($data);
     aristonBoiler::socketConnection($value);
     log::add('aristonBoiler', 'debug', '┌─▶︎ Exécution de la commande : ' . $this->getName() );
