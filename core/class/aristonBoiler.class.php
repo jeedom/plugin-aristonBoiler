@@ -454,7 +454,8 @@ class aristonBoilerCmd extends cmd {
         $data = array(
           'action' => 'setTargetTemp',
           'eqId' => $eqlogic->getId(),
-          'value' => floatVal($value)
+          'value' => floatVal($value),
+          'apikey' => jeedom::getApiKey('aristonBoiler')
         );
         break;
 
@@ -463,7 +464,8 @@ class aristonBoilerCmd extends cmd {
         $data = array(
           'action' => 'setOperationMode',
           'eqId' => $eqlogic->getId(),
-          'value' => $associatedOperationMode[intVal($value)]
+          'value' => $associatedOperationMode[intVal($value)],
+          'apikey' => jeedom::getApiKey('aristonBoiler')
         );
         break;
 
@@ -471,13 +473,15 @@ class aristonBoilerCmd extends cmd {
         $data = array(
           'action' => 'setBoostMode',
           'eqId' => $eqlogic->getId(),
-          'value' => true
+          'value' => true,
+          'apikey' => jeedom::getApiKey('aristonBoiler')
         );
       case 'setBoostModeOff':
         $data = array(
           'action' => 'setBoostMode',
           'eqId' => $eqlogic->getId(),
-          'value' => false
+          'value' => false,
+          'apikey' => jeedom::getApiKey('aristonBoiler')
         );
         break;
 
