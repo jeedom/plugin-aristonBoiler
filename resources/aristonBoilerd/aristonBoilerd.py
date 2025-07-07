@@ -72,9 +72,6 @@ def read_socket():
             if message['action'] == 'getDatas':
                 ret = get_boiler_infos(_email, _password, message['eqId'])
                 jeedom_com.send_change_immediate(ret)
-            elif message['action'] == 'getDatas':
-                ret = get_boiler_infos(_email, _password, message['eqId'])
-                jeedom_com.send_change_immediate(ret)
             elif message['action'] == 'setTargetTemp':
                 target_temp = message['value']
                 if ariston_conn is not None:
