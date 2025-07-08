@@ -227,7 +227,7 @@ class aristonBoiler extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-
+    $this->createCmds();
    
   }
 
