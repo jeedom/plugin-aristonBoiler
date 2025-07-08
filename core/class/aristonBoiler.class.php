@@ -246,6 +246,31 @@ class aristonBoiler extends eqLogic {
 
 
   public function createCmds() {
+
+    $onCmd = $this->getCmd(null, 'on');
+    if (!is_object($onCmd)) {
+      $onCmd = new aristonBoilerCmd();
+      $onCmd->setName(__('Allumer', __FILE__));
+      $onCmd->setEqLogic_id($this->getId());
+      $onCmd->setLogicalId('on');
+      $onCmd->setType('action');
+      $onCmd->setSubType('other');
+      $onCmd->setIsHistorized(0);
+      $onCmd->save();
+    }
+
+    $offCmd = $this->getCmd(null, 'off');
+    if (!is_object($offCmd)) {
+      $offCmd = new aristonBoilerCmd();
+      $offCmd->setName(__('Éteindre', __FILE__));
+      $offCmd->setEqLogic_id($this->getId());
+      $offCmd->setLogicalId('off');
+      $offCmd->setType('action');
+      $offCmd->setSubType('other');
+      $offCmd->setIsHistorized(0);
+      $offCmd->save();
+    }
+
    $readHPState = $this->getCmd(null, 'readHPState');
     if (!is_object($readHPState)) {
       $readHPState = new aristonBoilerCmd();
@@ -490,7 +515,22 @@ class aristonBoilerCmd extends cmd {
           'apikey' => jeedom::getApiKey('aristonBoiler')
         );
         break;
-
+      case 'on':
+          $data = array(
+            'action' => 'setonoff',
+            'eqId' => $eqlogic->getId(),
+            'value' => true,
+            'apikey' => jeedom::getApiKey('aristonBoiler')
+          );
+          break;
+      case 'off':
+          $data = array(
+            'action' => 'setonoff',
+            'eqId' => $eqlogic->getId(),
+            'value' => false,
+            'apikey' => jeedom::getApiKey('aristonBoiler')
+          );
+          break;
       default:
         throw new Exception(__('Commande non reconnue', __FILE__));
     }

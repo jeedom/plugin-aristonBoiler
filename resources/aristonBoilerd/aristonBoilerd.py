@@ -115,6 +115,18 @@ def read_socket():
                         logging.error(f"Invalid boost mode: {boost_mode}")
                 else:
                     logging.error("Ariston connection not initialized.")
+            elif message['action'] == 'setonoff':
+                onoff = message['value']
+                if ariston_conn is not None:
+                    try:
+                        ariston_conn.set_onoff(onoff)
+                        time.sleep(6)
+                        ret = get_boiler_infos(_email, _password, message['eqId'])
+                        jeedom_com.send_change_immediate(ret)
+                    except KeyError:
+                        logging.error(f"Invalid on/off value: {onoff}")
+                else:
+                    logging.error("Ariston connection not initialized.")
         except Exception as e:
             logging.error('Send command to demon error: %s', e)
 
